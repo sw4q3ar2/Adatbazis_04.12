@@ -1,0 +1,77 @@
+04.12
+
+A selectbe, (1)"pucér oszlopokat", (2)származtatott oszlop, 
+(3)"osszesitő függvényeket" irni.
+
+SELECT *
+from tanulo
+// hosszabb verzio
+where osztaly = "2A" or osztaly = "2B" or osztaly = "1A"
+// rovidebb verzio
+where osztaly IN("2A","2B","1A")
+
+// ki nem jar szakkörre? (nem jar szakkörre lekérdezés)
+select * from tanulo
+where azon NOT IN
+(
+SELECT distinct azon
+from tagsag
+where kor like "SZ*"
+)
+
+//hányan nem kaptak segélyt 1997ben (lekerdezes18)
+select count(*)
+from tanulo
+where azon not in 
+(
+SELECT azon
+from segely
+where year(kifiz) = 1997
+)
+
+// ki az aki szakkörre és nyelvkörre is jár egyaránt?
+SELECT * from tanulo
+where azon IN
+(
+SELECT azon 
+from tagsag 
+where kor like "SZ*")
+and azon IN
+(
+SELECT azon 
+from tagsag 
+where kor like "NY*"
+)
+
+// ILYET NEM IRUNK!!!
+SELECT *
+from kor
+where horasz = max(horasz)
+
+//melyik kornek a legnagyobb az oraszama (lekerdezes21)
+SELECT *
+from kor
+where horasz = (select max(horasz) from kor)
+
+
+// ki kapta a legutoljara kifizetett osszeget? (Lekérdezés22)
+SELECT azon
+from segely
+where kifiz = (select max(kifiz) from segely)
+
+// melyik osztályba hányan járnak? (Lekérdezés23)
+SELECT osztaly, count(*) as letszam
+from tanulo
+group by osztaly
+
+// MI MARAD MEG EGY GROUP BY UTÁN? -->
+az összesito fuggvény és amit a group by "ide" beirtam
+
+// melyik szakkörnek hány tagja van
+
+// .. -- .. (Lekérdezés24)
+SELECT kor,count(*) as ennyi
+from tagsag
+where kor like "SZ*"
+group by kor
+having count(*) >= 5
